@@ -29,9 +29,6 @@ print('GPU_sw = ', GPU_sw)
 torch.cuda.set_device(4)
 
 class Net(nn.Module):
-    """
-      torch.nn modeling - 3層 MLP model
-    """
 
     def __init__(self, n_feature, n_class, n_hidden1=600, n_hidden2=600, n_hidden3=600, n_hidden4=600):
         super(Net, self).__init__()
@@ -206,10 +203,9 @@ if __name__ == "__main__":
         weights = weights.cuda()
     
 
-    loss_fn = torch.nn.CrossEntropyLoss(weight = weights)    # 損失関数の定義
+    loss_fn = torch.nn.CrossEntropyLoss(weight = weights)
     optimizer = torch.optim.SGD(net.parameters(), 
-                                lr=0.003, momentum=0.9)  # オプティマイザ
-
+                                lr=0.003, momentum=0.9)  
 
     # Classifier for each fold
     for fold in fold_stances:
@@ -263,14 +259,11 @@ if __name__ == "__main__":
                     print('epoch {:>3d}:{:>5d}: loss = {:>10.3f}'.format(
                             epoch, i, loss.data[0]))
                 
-                # zero the gradient buffers, 勾配gradを初期化（ゼロ化）する．
                 optimizer.zero_grad()
-                # Backward pass: 誤差の逆伝搬を行って，パラメータの変化量を算出する．
                 loss.backward()
-                # パラメータ更新
+                
                 optimizer.step()
 
-        # Test プロセス
         y_pred = []
         y_target = []
         for data, target in test_loader:
@@ -293,7 +286,6 @@ if __name__ == "__main__":
         print(predicted)
         print(actual)
 
-        # テスト結果の評価
         confmat = confusion_matrix(actual, predicted)
         print('\nconfusion matrix:')
         print(confmat)

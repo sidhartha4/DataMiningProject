@@ -275,14 +275,10 @@ if __name__ == "__main__":
                     print('epoch {:>3d}:{:>5d}: loss = {:>10.3f}'.format(
                             epoch, i, loss.data[0]))
                 
-                # zero the gradient buffers, 勾配gradを初期化（ゼロ化）する．
                 optimizer.zero_grad()
-                # Backward pass: 誤差の逆伝搬を行って，パラメータの変化量を算出する．
                 loss.backward()
-                # パラメータ更新
                 optimizer.step()
 
-        # Test プロセス
         y_pred = []
         y_target = []
         for data, target in test_loader:
@@ -305,7 +301,6 @@ if __name__ == "__main__":
         print(predicted)
         print(actual)
 
-        # テスト結果の評価
         confmat = confusion_matrix(actual, predicted)
         print('\nconfusion matrix:')
         print(confmat)
@@ -323,8 +318,6 @@ if __name__ == "__main__":
         print("Score for fold "+ str(fold) + " was - " + str(score))
         if score > best_score:
             best_score = score
-        #    best_fold = clf
-
 
     X_holdout = np.array(X_holdout)
     y_holdout = np.array(y_holdout)

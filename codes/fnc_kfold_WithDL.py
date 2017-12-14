@@ -26,9 +26,7 @@ print('GPU_sw = ', GPU_sw)
 
 
 class Net(nn.Module):
-    """
-      torch.nn modeling - 3層 MLP model
-    """
+    
     def __init__(self, n_feature, n_class, n_hidden1=512, n_hidden2=256, n_hidden3=128, n_hidden4=64):
         super(Net, self).__init__()
         self.fc1 = nn.Linear(n_feature, n_hidden1)
@@ -100,9 +98,9 @@ if __name__ == "__main__":
     else:
         net = Net(n_feature, n_class)
 
-    loss_fn = torch.nn.CrossEntropyLoss()    # 損失関数の定義
+    loss_fn = torch.nn.CrossEntropyLoss()   
     optimizer = torch.optim.SGD(net.parameters(), 
-                                lr=0.003, momentum=0.9)  # オプティマイザ
+                                lr=0.003, momentum=0.9)  
 
 
     # Classifier for each fold
@@ -129,8 +127,7 @@ if __name__ == "__main__":
 
         testVal = X_test.shape[0]%100
         testVal = X_test.shape[0] - testVal
-        #clf = GradientBoostingClassifier(n_estimators=200, random_state=14128, verbose=True)
-        #clf.fit(X_train, y_train)
+        
 
 
         train = data_utils.TensorDataset(torch.from_numpy(X_train[:trainVal]).float(), torch.from_numpy(y_train[:trainVal]))
@@ -147,8 +144,6 @@ if __name__ == "__main__":
                 if GPU_sw:
                     data, target = data.cuda(), target.cuda()
                 data, target = Variable(data), Variable(target)
-                #print(data)
-                #print(target)
                 
                 y_pred = net.forward(data)
                 loss = loss_fn(y_pred, target)
@@ -157,14 +152,10 @@ if __name__ == "__main__":
                     print('epoch {:>3d}:{:>5d}: loss = {:>10.3f}'.format(
                             epoch, i, loss.data[0]))
                 
-                # zero the gradient buffers, 勾配gradを初期化（ゼロ化）する．
                 optimizer.zero_grad()
-                # Backward pass: 誤差の逆伝搬を行って，パラメータの変化量を算出する．
                 loss.backward()
-                # パラメータ更新
                 optimizer.step()
 
-        # Test プロセス
         y_pred = []
         y_target = []
         for data, target in test_loader:
@@ -187,7 +178,6 @@ if __name__ == "__main__":
         print(predicted)
         print(actual)
 
-        # テスト結果の評価
         confmat = confusion_matrix(actual, predicted)
         print('\nconfusion matrix:')
         print(confmat)
@@ -205,7 +195,6 @@ if __name__ == "__main__":
         print("Score for fold "+ str(fold) + " was - " + str(score))
         if score > best_score:
             best_score = score
-        #    best_fold = clf
 
 
     X_holdout = np.array(X_holdout)
